@@ -2,6 +2,9 @@
 
 **When the Sun disrupts Earth.** An evidence-first, cinematic observatory for geomagnetic storms, the Kp index, and solar-wind conditions — built with Streamlit, real NOAA/GFZ/NASA data, and explicit scientific caveats.
 
+[![CI](https://github.com/Shahbaz2104/space-weather-observatory/actions/workflows/ci.yml/badge.svg)](https://github.com/Shahbaz2104/space-weather-observatory/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-52F6E3.svg)](LICENSE)
+
 > This is an educational and exploratory tool. It is **not** an operational forecast service, a civil-protection system, or a substitute for NOAA SWPC alerts.
 >
 > **Status:** runs locally and in offline sample mode, with container configuration and CI
@@ -289,7 +292,8 @@ the OMNI2 dataset entry:
   author  = {Shahbaz},
   year    = {2026},
   version = {0.1.0},
-  note    = {MIT licensed. Data: NOAA SWPC, GFZ Kp (CC BY 4.0), NASA OMNIWeb.}
+  note    = {MIT licensed. Data: NOAA SWPC, GFZ Kp (CC BY 4.0), NASA OMNIWeb.},
+  url     = {https://github.com/Shahbaz2104/space-weather-observatory}
 }
 ```
 

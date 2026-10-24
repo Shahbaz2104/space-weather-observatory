@@ -42,6 +42,11 @@ dev = [
   "types-requests",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Shahbaz2104/space-weather-observatory"
+Repository = "https://github.com/Shahbaz2104/space-weather-observatory"
+Issues = "https://github.com/Shahbaz2104/space-weather-observatory/issues"
+
 [project.scripts]
 swo-fetch = "spaceweather.cli:fetch_main"
 swo-animate = "spaceweather.cli:animate_main"
