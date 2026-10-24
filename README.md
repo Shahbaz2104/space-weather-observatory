@@ -3,6 +3,10 @@
 **When the Sun disrupts Earth.** An evidence-first, cinematic observatory for geomagnetic storms, the Kp index, and solar-wind conditions — built with Streamlit, real NOAA/GFZ/NASA data, and explicit scientific caveats.
 
 > This is an educational and exploratory tool. It is **not** an operational forecast service, a civil-protection system, or a substitute for NOAA SWPC alerts.
+>
+> **Status:** runs locally and in offline sample mode, with container configuration and CI
+> defined; no public demo is deployed yet, so no live link is claimed. Deployment paths are
+> in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ![Space Weather Observatory — overview page showing the May 2024 Kp record](assets/screenshots/overview.png)
 
