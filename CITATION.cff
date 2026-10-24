@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use this software, cite it together with the underlying data sources."
+title: "Space Weather Observatory"
+type: software
+version: 0.1.0
+date-released: 2026-10-23
+license: MIT
+authors:
+  - name: "Shahbaz"
+references:
+  - type: article
+    title: "The geomagnetic Kp index and derived indices of geomagnetic activity"
+    authors:
+      - family-names: Matzka
+        given-names: J.
+      - family-names: Stolle
+        given-names: C.
+      - family-names: Yamazaki
+        given-names: Y.
+      - family-names: Bronkalla
+        given-names: O.
+      - family-names: Morschhauser
+        given-names: A.
+    year: 2021
+    journal: Space Weather
+    doi: 10.1029/2020SW002641
+  - type: dataset
+    title: "Geomagnetic Kp index. V. 1.0"
+    authors:
+      - family-names: Matzka
+        given-names: J.
+      - family-names: Bronkalla
+        given-names: O.
+      - family-names: Tornow
+        given-names: K.
+      - family-names: Elger
+        given-names: K.
+      - family-names: Stolle
+        given-names: C.
+    year: 2021
+    publisher:
+      name: GFZ Data Services
+    doi: 10.5880/Kp.0001
+  - type: dataset
+    title: "OMNI2 hourly interplanetary magnetic field and solar-wind data"
+    authors:
+      - name: NASA Space Physics Data Facility
+    year: 2026
+    publisher:
+      name: NASA GSFC

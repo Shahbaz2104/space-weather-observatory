@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-10-23T16:06:52.525752+00:00",
+  "description": "Versioned sample of genuine observations for offline demonstration. These are not live data.",
+  "kp": {
+    "files": [
+      "kp_2003.csv",
+      "kp_2024.csv"
+    ],
+    "source": "GFZ Helmholtz Centre for Geosciences (Kp index)",
+    "url": "https://kp.gfz.de/fileadmin/files_for_gfz_cms/Kp_ap_since_1932.txt",
+    "license": "CC BY 4.0",
+    "citation": "Matzka, J., Stolle, C., Yamazaki, Y., Bronkalla, O., & Morschhauser, A. (2021). The geomagnetic Kp index and derived indices of geomagnetic activity. Space Weather, 19, e2020SW002641. https://doi.org/10.1029/2020SW002641",
+    "retrieved_at": "2026-10-23T16:05:29.474411+00:00",
+    "rows": {
+      "2003": 2920,
+      "2024": 2928
+    },
+    "columns": {
+      "time_utc": "UTC timestamp at the start of a three-hour Kp interval",
+      "kp": "planetary Kp index, unitless 0-9",
+      "status": "definitive or preliminary",
+      "source": "GFZ"
+    }
+  },
+  "solar_wind": {
+    "file": "omni_2024_05.csv",
+    "source": "NASA OMNIWeb / Space Physics Data Facility",
+    "url": "https://spdf.gsfc.nasa.gov/pub/data/omni/low_res_omni/omni2_2024.dat",
+    "license": "NASA data usage guidance; attribution requested",
+    "citation": "NASA Space Physics Data Facility, OMNI2 hourly interplanetary magnetic field and solar-wind data. https://omniweb.gsfc.nasa.gov/",
+    "retrieved_at": "2026-10-23T16:06:51.987125+00:00",
+    "rows": 744,
+    "columns": {
+      "time_utc": "UTC hourly timestamp",
+      "speed_kms": "proton flow speed, km/s",
+      "density_cm3": "proton density, particles/cm^3",
+      "temperature_k": "proton temperature, K",
+      "bz_gsm_nt": "IMF Bz in GSM coordinates, nT",
+      "bt_nt": "IMF field magnitude, nT"
+    }
+  },
+  "recent_reference": {
+    "source": "NOAA Space Weather Prediction Center",
+    "url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
+    "retrieved_at": "2026-10-23T16:05:20.732854+00:00"
+  }
+}
