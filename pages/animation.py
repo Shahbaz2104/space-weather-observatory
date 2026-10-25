@@ -36,6 +36,12 @@ if bundle.frame.empty:
 
 settings = get_settings()
 settings.ensure_directories()
+max_frames = int(settings.max_animation_frames)
+default_fps = int(settings.default_animation_fps)
+default_width = float(settings.default_animation_width)
+default_height = float(settings.default_animation_height)
+default_dpi = int(settings.default_animation_dpi)
+dpi_options = sorted({80, 100, 120, 150, default_dpi})
 source_names = ", ".join(sorted({source.name for source in bundle.sources})) or "observed"
 if bundle.is_sample:
     source_label = "OFFLINE SAMPLE · GFZ Kp"
@@ -57,9 +63,9 @@ with left:
 with middle:
     fps = st.slider(
         "Frames per second",
-        min_value=4,
-        max_value=30,
-        value=10,
+        min_value=1,
+        max_value=60,
+        value=default_fps,
         step=1,
         key="animation_fps",
     )
@@ -71,33 +77,36 @@ with right:
         value=1,
         step=1,
         key="animation_stride",
-        help="Use every Nth observation. A hard cap of 600 frames is also applied.",
+        help=(
+            f"Use every Nth observation. A hard cap of {max_frames} frames "
+            "is also applied."
+        ),
     )
 
 left, middle, right = st.columns([1, 1, 1])
 with left:
     width = st.slider(
         "Figure width (inches)",
-        min_value=9.0,
-        max_value=16.0,
-        value=12.0,
+        min_value=min(9.0, default_width),
+        max_value=max(16.0, default_width),
+        value=default_width,
         step=0.5,
         key="animation_width",
     )
 with middle:
     height = st.slider(
         "Figure height (inches)",
-        min_value=5.0,
-        max_value=10.0,
-        value=6.4,
+        min_value=min(5.0, default_height),
+        max_value=max(10.0, default_height),
+        value=default_height,
         step=0.2,
         key="animation_height",
     )
 with right:
     dpi = st.select_slider(
         "Resolution (DPI)",
-        options=[80, 100, 120, 150],
-        value=100,
+        options=dpi_options,
+        value=default_dpi,
         key="animation_dpi",
     )
 
@@ -113,7 +122,7 @@ config = AnimationConfig(
     width=float(width),
     height=float(height),
     dpi=int(dpi),
-    max_frames=600,
+    max_frames=max_frames,
     seed=42,
     threshold=float(threshold),
 )
@@ -215,7 +224,7 @@ if stored and stored.get("signature") == signature:
 else:
     st.caption(
         "Choose a focused window in the sidebar, set the playback rate, and render. "
-        "Long windows are capped at 600 frames."
+        f"Long windows are capped at {max_frames} frames."
     )
 
 st.divider()

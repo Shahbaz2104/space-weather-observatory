@@ -87,7 +87,7 @@ def main() -> int:
     )
     config = AnimationConfig(
         fps=max(1, args.fps),
-        max_frames=min(settings.max_animation_frames, 400),
+        max_frames=settings.max_animation_frames,
         threshold=args.threshold,
         width=15.0,
         height=8.0,

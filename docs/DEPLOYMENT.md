@@ -51,6 +51,9 @@ SWO_OFFLINE_MODE=true  streamlit run app.py   # never touches the network
 SWO_KP_STORM_THRESHOLD=6  streamlit run app.py # stricter event definition
 ```
 
+Animation Studio reads its initial playback rate, figure size, and resolution from
+`SWO_DEFAULT_ANIMATION_*`, and enforces `SWO_MAX_ANIMATION_FRAMES` on every export.
+
 ### Writable paths
 
 The app writes to `data/cache/` (HTTP response cache), `data/processed/` (rebuilt

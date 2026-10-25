@@ -41,10 +41,10 @@ class Settings(BaseSettings):
     offline_mode: bool = False
 
     max_animation_frames: int = Field(default=600, ge=10, le=10_000)
-    default_animation_fps: int = Field(default=24, ge=1, le=60)
-    default_animation_width: float = Field(default=15.0, gt=0.0)
-    default_animation_height: float = Field(default=8.0, gt=0.0)
-    default_animation_dpi: int = Field(default=110, ge=50, le=300)
+    default_animation_fps: int = Field(default=10, ge=1, le=60)
+    default_animation_width: float = Field(default=12.0, gt=0.0)
+    default_animation_height: float = Field(default=6.4, gt=0.0)
+    default_animation_dpi: int = Field(default=100, ge=50, le=300)
 
     nasa_enabled: bool = False
     nasa_api_key: str | None = None

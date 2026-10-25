@@ -45,7 +45,7 @@ def _prepare_observations(
         )
     valid = valid.sort_values("time_utc").reset_index(drop=True)
     requested_stride = max(1, config.frame_stride)
-    bounded_stride = max(1, math.ceil(len(valid) / config.max_frames))
+    bounded_stride = max(1, math.ceil((len(valid) - 1) / (config.max_frames - 1)))
     stride = max(requested_stride, bounded_stride)
     sampled = valid.iloc[::stride].copy()
     if sampled.index[-1] != valid.index[-1]:

@@ -206,8 +206,8 @@ superposed-epoch comparison of the two sampled storms.
   explicit stale-source states instead of silent fallbacks.
 - Implemented the analytical layer — completeness metrics, threshold-based event detection,
   three-hour resampling with coverage fractions, and autocorrelation-adjusted correlation
-  intervals — and covered each convention with unit and integration tests (40 tests, Ruff and
-  mypy clean).
+  intervals — and covered each convention with unit and integration tests (51 tests, Ruff and
+  mypy clean), including an offline `AppTest` smoke test of all seven pages.
 - Delivered reproducibility tooling: CSV, Parquet, figure, GIF/MP4 exports with JSON provenance
   recording sources, retrieval times, units, transformations, and warnings; verified MP4
   rendering end to end through ffmpeg.
@@ -216,14 +216,14 @@ superposed-epoch comparison of the two sampled storms.
 
 ## Evidence log
 
-Captured on 24 October 2026 in this repository's virtual environment (Python 3.12, Linux).
+Captured on 24–25 October 2026 in this repository's virtual environment (Python 3.12, Linux).
 
 | Check | Command | Result |
 | --- | --- | --- |
-| Test suite | `pytest -q` | 40 passed in 2.66 s |
+| Test suite | `pytest -q` | 51 passed in 13.85 s |
 | Lint | `ruff check .` | All checks passed |
 | Types | `mypy src` | Success: no issues found in 36 source files |
-| Page smoke test | `AppTest.from_file` over `app.py` + 7 pages, offline mode | No exceptions on any page |
+| Page smoke test | `pytest tests/integration/test_pages_smoke.py` (`AppTest` over `app.py` + 7 pages, offline mode) | 8 scripts, no exceptions |
 | Clean-install deployability | Fresh venv, `pip install -r requirements.txt` only, then the same page smoke test | Package imported without an extra `pip install -e .`; 8 scripts, no exceptions |
 | Server cold start | `streamlit run app.py`, timed to `/_stcore/health` = 200, offline, two runs | 1.5 s and 1.8 s |
 | First page build | `AppTest` on `app.py` / `pages/overview.py`, offline | 1.5 s entry point; ~0.3 s per page script |

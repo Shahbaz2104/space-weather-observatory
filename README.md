@@ -180,7 +180,11 @@ Copy `.env.example` to `.env`; every setting uses the `SWO_` prefix.
 | `SWO_HTTP_TIMEOUT_SECONDS` | `20` | Per-request timeout |
 | `SWO_HTTP_RETRIES` | `3` | Retry count |
 | `SWO_CACHE_TTL_SECONDS` | `900` | Default HTTP cache lifetime |
-| `SWO_MAX_ANIMATION_FRAMES` | `600` | Upper bound on rendered frames |
+| `SWO_MAX_ANIMATION_FRAMES` | `600` | Upper bound on rendered frames (app and CLI) |
+| `SWO_DEFAULT_ANIMATION_FPS` | `10` | Initial playback rate in Animation Studio |
+| `SWO_DEFAULT_ANIMATION_WIDTH` | `12.0` | Initial figure width in inches |
+| `SWO_DEFAULT_ANIMATION_HEIGHT` | `6.4` | Initial figure height in inches |
+| `SWO_DEFAULT_ANIMATION_DPI` | `100` | Initial render resolution |
 | `SWO_NASA_ENABLED` | `false` | Opt in to optional NASA features |
 | `SWO_NASA_API_KEY` | empty | API key for NASA services |
 
@@ -194,7 +198,7 @@ ruff check .
 mypy src
 ```
 
-The suite covers parsers, missing-data handling, event conventions, correlation statistics, lag direction, provenance serialization, sample loading, and service-level alignment. Integration tests use the committed genuine-data sample and do not require network access.
+The suite covers parsers, missing-data handling, event conventions, correlation statistics, lag direction, provenance serialization, sample loading, service-level alignment, and a smoke test of the entry point and all seven pages through Streamlit's `AppTest` harness. Integration tests use the committed genuine-data sample and do not require network access.
 
 ## Reproducibility and exports
 
@@ -208,8 +212,8 @@ end of [docs/PORTFOLIO.md](docs/PORTFOLIO.md):
 
 | Measurement | How | Result |
 | --- | --- | --- |
-| Test suite | `pytest -q` | 40 tests in ~6.7 s |
-| App entry point and all seven pages | `AppTest.from_file(...)` in offline mode | 8 scripts, no exceptions, ~20 s total |
+| Test suite | `pytest -q` | 51 tests in ~14 s |
+| App entry point and all seven pages | `AppTest.from_file(...)` in offline mode | 8 scripts, no exceptions, ~11 s total |
 | Static quickstart | `python main.py` | PNG + GIF written to `output/` |
 | Animation export | `python main.py --offline --format mp4` | 391 frames at 6 fps, 65.2 s video, 1.0 MB, ~3 min 39 s wall time (single run) |
 | Server cold start | process start to `/_stcore/health` = 200, offline mode, two runs | 1.5 s and 1.8 s |
