@@ -51,43 +51,40 @@ Use the PDF as a document post, or the six PNGs in order. Put the repo and live 
 first comment rather than the post body.
 
 ```text
-Space weather charts can lie without a single bad data point.
+A space weather chart can look calm when the data is simply missing.
 
-A missing observation can be drawn as quiet. An interpolated curve can look like a measurement. A Kp value can be mistaken for a storm.
+A gap gets drawn as a flat line. A smooth curve looks like a real measurement. One high number gets read as a storm.
 
-I built the Space Weather Observatory to make those distinctions visible.
+I built the Space Weather Observatory, a free seven-page web app, to make those differences visible.
 
-It is a seven-page Streamlit app for geomagnetic storms, solar wind, and the Kp index:
+Space weather is how the Sun's activity affects Earth's magnetic field. Strong storms can disrupt satellites, GPS, power grids, and radio. The app uses real data from NOAA, GFZ, and NASA to make those events easier to inspect.
 
-→ Overview: current Kp, G-scale context, storm runs, and source health.
-→ Storm Explorer: threshold-based event forensics with missing-slot accounting.
-→ Activity Heatmap: year/month and hour-of-day structure, with absent cells left absent.
-→ Solar Wind: modeled NOAA propagation or OMNI2 observations, clearly labelled, beside the geomagnetic response.
-→ Correlation Lab: association with effective sample size and autocorrelation-aware intervals.
-→ Animation Studio: deterministic observed-Kp playback with provenance.
-→ Methodology: every convention and caveat in one place.
+What you can do:
+→ See the latest Kp value. Kp is a 0–9 scale of how disturbed Earth's magnetic field is.
+→ Explore past storms and the missing data around them.
+→ View a heatmap of activity over many years.
+→ Compare the solar wind (the stream of particles from the Sun) with Earth's response.
+→ See why two things moving together does not mean one caused the other.
+→ Watch the May 2024 storm unfold.
+→ Check where every number came from.
 
-The data comes from NOAA SWPC, the GFZ Helmholtz Centre for Geosciences, and NASA OMNIWeb. Values keep their source, timestamp, units, and status — observed, preliminary, definitive, or modeled.
+From the built-in May 2024 sample:
+• The strongest reading was Kp 9.00, a G5 — the top storm category.
+• The app found six periods above the storm threshold.
+• Solar wind speed and Kp tended to rise together. The correlation was 0.63, where 1 means they move together perfectly. But a storm lasts for hours, so consecutive readings are not independent. The 243 three-hour readings are worth only about 21 separate pieces of evidence. The pattern is there, but less certain than the raw count suggests.
 
-On the bundled May 2024 sample:
-• peak Kp 9.00 (G5)
-• six detected threshold runs
-• solar-wind speed vs Kp: r = 0.627, but effective n = 21.2 on 243 paired bins
+The rules I tried to keep:
+• Missing data stays missing. No filling gaps or drawing them as zero.
+• Computer-model results are labelled as estimates, not as direct measurements.
+• Every chart and download can show where its numbers came from and when.
+• No forecast is presented as an observation.
+• This is not an official forecast or warning service.
 
-That last number is the point. 243 autocorrelated three-hour bins are not 243 independent observations, so the naive confidence interval is too narrow.
+The project has 58 automated tests and code checks, so those rules are less likely to break without anyone noticing.
 
-The engineering rules are simple to state and hard to keep:
-• missing stays missing — no interpolation, forward-fill, or zero-fill
-• display sampling keeps endpoints and missing-gap boundaries
-• metrics, events, tables, and exports use every row
-• provenance is available as JSON for exports
-• no forecast is dressed up as an observation
+Live demo and code are in the first comment.
 
-The project has 58 tests, Ruff and mypy checks, and a GitHub Actions workflow. It runs in offline sample mode with genuine observations, so the interface can be inspected without a live feed.
-
-Live demo and repository are in the first comment.
-
-If you work with operational space-weather data: which caveat would you put first?
+Which of these rules would you want every dashboard to follow?
 
 #SpaceWeather #DataVisualization #Python #Streamlit #OpenSource
 ```
@@ -95,13 +92,15 @@ If you work with operational space-weather data: which caveat would you put firs
 ## Short version
 
 ```text
-A missing observation is not a quiet day.
+A missing reading is not a quiet day.
 
-The Space Weather Observatory is a seven-page Streamlit app for geomagnetic storms, solar wind, and the Kp index — built on NOAA, GFZ, and NASA data, with no interpolation, no zero-fill, and JSON provenance for exports.
+The Space Weather Observatory is a free seven-page web app about space weather: geomagnetic storms, solar wind, and the Kp index (a 0–9 scale of how disturbed Earth's magnetic field is). It uses real NOAA, GFZ, and NASA data.
 
-On the bundled May 2024 sample: peak Kp 9.00 (G5). Solar-wind speed vs Kp: r = 0.627, effective n = 21.2 on 243 paired bins. 243 autocorrelated bins are not 243 independent observations.
+It does not fill in gaps. It labels model output as model output. Every chart and download can show where its numbers came from.
 
-58 tests. Ruff and mypy. Live demo and repo in the first comment.
+From the May 2024 sample: the strongest Kp was 9.00 (G5, the top storm category). Solar wind speed and Kp tended to rise together (correlation 0.63), but a storm lasts for hours, so consecutive readings are not independent. The 243 three-hour readings are worth only about 21 separate pieces of evidence. The pattern is there, but less certain than it looks.
+
+58 automated tests. Live demo and code are in the first comment.
 
 #SpaceWeather #DataVisualization #Python #Streamlit #OpenSource
 ```
@@ -115,35 +114,35 @@ Live demo: https://space-weather-observatory-4xedxr5f2n5vpym7t5ix7p.streamlit.ap
 Repository: https://github.com/Shahbaz2104/space-weather-observatory
 Methodology: https://github.com/Shahbaz2104/space-weather-observatory/blob/main/docs/METHODOLOGY.md
 
-Data: NOAA SWPC (Kp and propagated solar wind), GFZ Helmholtz Centre for Geosciences (Kp/ap, CC BY 4.0), NASA OMNIWeb (OMNI2). The May 2024 figures come from the bundled sample; the app labels live mode and offline mode separately.
+Data: NOAA SWPC (current Kp and modeled solar wind), GFZ Helmholtz Centre for Geosciences (long-term Kp archive, CC BY 4.0), and NASA OMNIWeb (historical solar wind). The May 2024 numbers are from the app's built-in sample, not current conditions. The app labels live and sample data separately.
 ```
 
 ## Carousel copy
 
 | Slide | On-image copy | Source visual |
 | --- | --- | --- |
-| 1 | **When the Sun disrupts Earth.** An evidence-first observatory for geomagnetic storms: real observations, explicit uncertainty, and no zero-fill. | Overview, May 2024 offline sample |
-| 2 | **Three ways a chart can lie.** A gap drawn as quiet. An interpolated curve drawn as measurement. A Kp value confused with a storm. | Typographic |
-| 3 | **Seven linked views. One time convention.** Overview, Storm Explorer, Activity Heatmap, Solar Wind, Correlation Lab, Animation Studio, Methodology. | Activity Heatmap |
-| 4 | **Missing stays missing.** No interpolation. No zero-fill. No silent gap closure. Display sampling keeps endpoints and missing-run boundaries. | Storm Explorer, plus JSON provenance |
-| 5 | **A correlation is not a mechanism.** Pearson r 0.627 · effective n 21.2 · 243 paired bins. The lab reports the sample size, not just the coefficient. | Correlation Lab |
-| 6 | **Seven pages. Real observations.** Live demo and repository. 58 tests · Ruff · mypy. | Solar Wind |
+| 1 | **When the Sun disrupts Earth.** A clear, honest look at geomagnetic storms: real data, visible sources, and no made-up values. | Overview, May 2024 sample |
+| 2 | **Three ways a chart can lie.** A gap drawn as calm. A smooth line drawn as real data. One high number mistaken for a storm. | Typographic |
+| 3 | **Seven linked views. One shared timeline.** Overview, Storm Explorer, Activity Heatmap, Solar Wind, Correlation Lab, Animation Studio, Methodology. | Activity Heatmap |
+| 4 | **Missing stays missing.** No filled gaps. No fake zeros. No hidden gaps. Charts keep the edges of every gap. | Storm Explorer, plus a source record |
+| 5 | **Moving together is not proof.** Correlation 0.627 · 21.2 separate pieces of evidence · 243 readings. The lab shows how much evidence is behind the number. | Correlation Lab |
+| 6 | **Seven pages. Real data.** Live demo and repository. 58 tests · automated checks · open source. | Solar Wind |
 
-Every screenshot slide carries a visible `Offline sample · not live` caption. Do not remove
-that caption: the figures are from the bundled May 2024 record, not current conditions.
+Every screenshot slide is captioned as sample data, not live. Do not remove that caption: the
+figures are from the built-in May 2024 record, not current conditions.
 
 ## Alt text
 
 Use these when LinkedIn offers an alt-text field.
 
 - **Hero:** Dark navy card titled “When the Sun disrupts Earth.” with a screenshot of the observatory overview showing the May 2024 Kp peak of 9.00, a G5 badge, and source labels for NOAA, GFZ, and NASA.
-- **Banner:** Wide banner with the project title, repository URL, and a Kp timeline from the May 2024 offline sample.
+- **Banner:** Wide banner with the project title, repository URL, and a Kp timeline from the May 2024 sample data.
 - **Slide 1:** Carousel cover titled “When the Sun disrupts Earth.” with the observatory overview, NOAA/GFZ/NASA labels, and “58 tests.”
-- **Slide 2:** Slide listing three misleading chart defaults: a gap drawn as quiet, an interpolated curve drawn as measurement, and a Kp value confused with a storm.
-- **Slide 3:** Slide with seven page labels and a screenshot of the geomagnetic activity heatmap.
-- **Slide 4:** Slide titled “Missing stays missing.” with a Storm Explorer screenshot and a note that JSON provenance is available for exports.
-- **Slide 5:** Slide with Pearson r 0.627, effective n 21.2, 243 paired bins, and a screenshot of the Correlation Lab.
-- **Slide 6:** Closing slide with the live demo URL, repository URL, 58 tests, and a solar-wind chart from the offline sample.
+- **Slide 2:** Slide listing three misleading chart defaults: a gap drawn as calm, a smooth line drawn as real data, and one high number mistaken for a storm.
+- **Slide 3:** Slide titled “Seven linked views. One shared timeline.” with seven page labels and a screenshot of the activity heatmap.
+- **Slide 4:** Slide titled “Missing stays missing.” with a Storm Explorer screenshot and a note that every download can include a source record.
+- **Slide 5:** Slide titled “Moving together is not proof.” with correlation 0.627, 21.2 separate pieces of evidence, 243 readings, and a screenshot of the Correlation Lab.
+- **Slide 6:** Closing slide with the live demo URL, repository URL, 58 tests, automated checks, open source, and a solar-wind chart from the sample data.
 - **PDF:** Six-slide carousel about the Space Weather Observatory, covering the problem, seven linked views, missing-data policy, correlation statistics, and links to the live demo and repository.
 
 ## Posting checklist

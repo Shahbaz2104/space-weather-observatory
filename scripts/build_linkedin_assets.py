@@ -303,8 +303,8 @@ def cover_slide() -> Image.Image:
     paragraph(
         draw,
         (80, 448),
-        "An evidence-first observatory for geomagnetic storms: real observations, "
-        "explicit uncertainty, and no zero-fill.",
+        "A clear, honest look at geomagnetic storms: real data, visible sources, and "
+        "no made-up values.",
         font(30, "regular"),
         MUTED,
         900,
@@ -314,7 +314,7 @@ def cover_slide() -> Image.Image:
     for label, color in (
         ("NOAA / GFZ / NASA", CYAN),
         ("58 TESTS", VIOLET),
-        ("PYTHON · STREAMLIT", MUTED),
+        ("FREE · OPEN SOURCE", MUTED),
     ):
         x += chip(draw, (x, 566), label, font(20, "semibold"), fg=color) + 12
     screenshot(
@@ -325,7 +325,7 @@ def cover_slide() -> Image.Image:
     )
     draw.text(
         (90, 1218),
-        "Genuine offline sample · May 2024 · not live",
+        "May 2024 sample data · not live",
         font=font(19, "regular"),
         fill=DIM,
     )
@@ -339,23 +339,23 @@ def problem_slide() -> Image.Image:
     paragraph(
         draw,
         (80, 390),
-        "None of them require bad data. They only require a misleading default.",
+        "A chart can mislead without a single wrong number.",
         font(30, "regular"),
         MUTED,
         900,
         line_height=44,
     )
     items = [
-        ("01", "A gap drawn as quiet", "Missing observations become a flat line."),
+        ("01", "A gap drawn as calm", "Missing readings become a flat line."),
         (
             "02",
-            "An interpolated curve drawn as measurement",
-            "Smoothing invents values that were never observed.",
+            "A smooth line drawn as real data",
+            "Smoothing invents values that were never measured.",
         ),
         (
             "03",
-            "A Kp value confused with a storm",
-            "An activity index is not an event catalogue.",
+            "One high number mistaken for a storm",
+            "A single reading is not a full storm.",
         ),
     ]
     y = 528
@@ -373,18 +373,18 @@ def problem_slide() -> Image.Image:
             line_height=35,
         )
         y += 238
-    footer(draw, width=1080, source_note="Representation first")
+    footer(draw, width=1080, source_note="Show the gaps")
     return canvas.convert("RGB")
 
 
 def features_slide() -> Image.Image:
     canvas, draw = slide_shell(3)
-    title(draw, "Seven linked views.\nOne time convention.", size=88)
+    title(draw, "Seven linked views.\nOne shared timeline.", size=88)
     paragraph(
         draw,
         (80, 392),
-        "From a live Kp overview to a ninety-year heatmap, every screen uses UTC and "
-        "keeps missing observations missing.",
+        "From the latest Kp reading to a long-term heatmap, every page uses UTC and "
+        "keeps gaps visible.",
         font(29, "regular"),
         MUTED,
         900,
@@ -414,7 +414,7 @@ def features_slide() -> Image.Image:
     )
     draw.text(
         (90, 1218),
-        "Activity heatmap · offline sample covers 2003 and 2024",
+        "Activity heatmap · sample data, 2003 and 2024 · not live",
         font=font(19, "regular"),
         fill=DIM,
     )
@@ -428,7 +428,7 @@ def integrity_slide() -> Image.Image:
     paragraph(
         draw,
         (80, 330),
-        "No interpolation. No zero-fill. No silent gap closure.",
+        "No filled gaps. No fake zeros. No hidden gaps.",
         font(32, "medium"),
         CYAN,
         900,
@@ -437,8 +437,8 @@ def integrity_slide() -> Image.Image:
     paragraph(
         draw,
         (80, 392),
-        "Display sampling keeps endpoints and missing-run boundaries, so a long series "
-        "cannot be made to look continuous.",
+        "Charts keep the edges of every gap, so a long record cannot be made to look "
+        "complete.",
         font(27, "regular"),
         MUTED,
         900,
@@ -452,7 +452,7 @@ def integrity_slide() -> Image.Image:
     )
     draw.text(
         (90, 1080),
-        "Storm Explorer · sampled span, missing slots, and provenance",
+        "Storm Explorer · storm length and missing readings · sample, not live",
         font=font(19, "regular"),
         fill=DIM,
     )
@@ -460,34 +460,33 @@ def integrity_slide() -> Image.Image:
     paragraph(
         draw,
         (108, 1148),
-        "JSON provenance is available for exports: sources, timestamps, units, "
-        "transformations, threshold, and warnings.",
+        "Every download can include a source record: where the data came from, when, "
+        "the units, settings, and warnings.",
         font(21, "regular"),
         TEXT,
         864,
         line_height=28,
     )
-    footer(draw, width=1080, source_note="Genuine offline sample")
+    footer(draw, width=1080, source_note="Sample data, not live")
     return canvas.convert("RGB")
 
 
 def statistics_slide() -> Image.Image:
     canvas, draw = slide_shell(5)
-    title(draw, "A correlation is\nnot a mechanism.", size=92)
+    title(draw, "Moving together\nis not proof.", size=92)
     paragraph(
         draw,
         (80, 408),
-        "The lab reports the sample size and autocorrelation-aware uncertainty, not "
-        "just the headline coefficient.",
+        "The lab shows how much independent evidence is behind the headline number.",
         font(28, "regular"),
         MUTED,
         900,
         line_height=40,
     )
     cards = [
-        ("PEARSON r", "0.627", "95% CI uses effective n"),
-        ("EFFECTIVE n", "21.2", "autocorrelation-aware"),
-        ("PAIRED BINS", "243", "missing pairs excluded"),
+        ("CORRELATION", "0.627", "1 means a perfect match"),
+        ("REAL EVIDENCE", "21.2", "not 243 separate readings"),
+        ("READINGS", "243", "three hours each"),
     ]
     x = 80
     for label, value, note in cards:
@@ -512,7 +511,7 @@ def statistics_slide() -> Image.Image:
     )
     draw.text(
         (90, 1198),
-        "May 2024 offline sample · solar-wind speed versus Kp",
+        "May 2024 sample · not live · solar wind speed and Kp",
         font=font(19, "regular"),
         fill=DIM,
     )
@@ -522,13 +521,13 @@ def statistics_slide() -> Image.Image:
 
 def closing_slide() -> Image.Image:
     canvas, draw = slide_shell(6)
-    tracked(draw, (80, 172), "INSPECT THE EVIDENCE", font(23, "semibold"), CYAN, 4)
-    title(draw, "Seven pages.\nReal observations.", size=94, y=222)
+    tracked(draw, (80, 172), "CHECK THE EVIDENCE", font(23, "semibold"), CYAN, 4)
+    title(draw, "Seven pages.\nReal data.", size=94, y=222)
     paragraph(
         draw,
         (80, 448),
-        "Python, Streamlit, Plotly, pandas, NumPy, SciPy, Matplotlib. Built to make "
-        "the caveats as legible as the numbers.",
+        "Built with Python and Streamlit. Every page shows the limits as clearly as "
+        "the numbers.",
         font(29, "regular"),
         MUTED,
         900,
@@ -561,15 +560,15 @@ def closing_slide() -> Image.Image:
     )
     draw.text(
         (112, 748),
-        "Live mode and the offline sample are labelled. Not a forecast service.",
+        "Live data and sample data are labelled. Not a forecast service.",
         font=font(18, "regular"),
         fill=DIM,
     )
     x = 80
     for label, color in (
-        ("58 TESTS · RUFF · MYPY", VIOLET),
-        ("GITHUB ACTIONS", CYAN),
-        ("MIT LICENSED CODE", MUTED),
+        ("58 TESTS", VIOLET),
+        ("AUTOMATED CHECKS", CYAN),
+        ("OPEN SOURCE", MUTED),
     ):
         x += chip(draw, (x, 814), label, font(19, "semibold"), fg=color) + 10
     screenshot(
@@ -581,7 +580,7 @@ def closing_slide() -> Image.Image:
     )
     draw.text(
         (80, 1218),
-        "Solar Wind · observed speed and IMF Bz · offline sample",
+        "Solar wind · speed and magnetic field · sample, not live",
         font=font(19, "regular"),
         fill=DIM,
     )
@@ -600,8 +599,8 @@ def hero() -> Image.Image:
     paragraph(
         draw,
         (64, 296),
-        "An evidence-first dashboard for geomagnetic storms — real NOAA, GFZ, and "
-        "NASA observations with explicit uncertainty and no zero-fill.",
+        "A clear, honest dashboard for geomagnetic storms — real NOAA, GFZ, and "
+        "NASA data, with no made-up values.",
         font(22, "regular"),
         MUTED,
         520,
@@ -611,7 +610,7 @@ def hero() -> Image.Image:
     for label, color in (
         ("NOAA / GFZ / NASA", CYAN),
         ("58 TESTS", VIOLET),
-        ("PYTHON · STREAMLIT", MUTED),
+        ("FREE · OPEN SOURCE", MUTED),
     ):
         x += chip(draw, (x, 416), label, font(17, "semibold"), fg=color) + 9
     draw.text(
@@ -622,7 +621,7 @@ def hero() -> Image.Image:
     )
     draw.text(
         (64, 568),
-        "Offline sample · not a live forecast service",
+        "Sample data · not a live forecast service",
         font=font(16, "regular"),
         fill=DIM,
     )
@@ -635,7 +634,7 @@ def hero() -> Image.Image:
     )
     draw.text(
         (610, 526),
-        "Overview · genuine May 2024 observations",
+        "Overview · May 2024 sample data",
         font=font(16, "regular"),
         fill=DIM,
     )
@@ -651,8 +650,7 @@ def banner() -> Image.Image:
     paragraph(
         draw,
         (64, 178),
-        "An evidence-first observatory for geomagnetic storms, solar wind, and the "
-        "Kp index.",
+        "A clear, honest view of geomagnetic storms, solar wind, and the Kp index.",
         font(23, "regular"),
         MUTED,
         720,
