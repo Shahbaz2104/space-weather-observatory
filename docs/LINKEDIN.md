@@ -152,7 +152,7 @@ Use these when LinkedIn offers an alt-text field.
 - [ ] Set the Streamlit Cloud **Main file path** to `app.py` and reboot.
 - [ ] Confirm both the root URL and `/overview` load without a login.
 - [ ] Run `pytest -q`, `ruff check .`, and `mypy src`; the current suite is 58 tests.
-- [ ] Push and confirm the GitHub Actions `quality` and `container` jobs pass.
+- [x] Push and confirm the GitHub Actions `quality` and `container` jobs pass. (Passed on commit `595a1f1`.)
 - [ ] Run `python3 scripts/build_linkedin_assets.py` after any copy or screenshot change.
 - [ ] Upload `space-weather-linkedin-carousel.pdf` as a document post. Suggested title: “When the Sun disrupts Earth — Space Weather Observatory.”
 - [ ] Add the first comment with the live demo and repository.
@@ -170,6 +170,6 @@ Use these when LinkedIn offers an alt-text field.
   propagation is labelled as modeled, not presented as a direct measurement.
 - The live app has a live mode and a labelled offline sample; it is not an operational
   forecast or warning service.
-- The 58-test count and the Docker smoke job must be verified against the pushed commit before
-  they are described as passing in CI. Docker is not available in this local environment.
+- CI run `40329635430` (commit `595a1f1`) passed both Python quality jobs and the `container`
+  build/offline-run/health-check job. Re-check after future pushes; local Docker is unavailable.
 - NOAA, GFZ, and NASA are data providers, not project partners. Do not imply their endorsement.

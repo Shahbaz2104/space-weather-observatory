@@ -78,8 +78,9 @@ No API key is required. NASA DONKI is optional and disabled by default.
 
 ### Docker
 
-Docker is configured but was not available in the development environment used to build
-this project, so the image and `compose.yaml` have **not** been built here.
+Docker was not available in the development environment used to build this project. The
+GitHub Actions `container` job now builds the image, runs it offline, and polls
+`/_stcore/health`; local `docker build` and `compose.yaml` runs remain unverified here.
 
 ```bash
 docker build -t space-weather-observatory .
@@ -258,14 +259,15 @@ and in the Animation Studio output.
   chart, while metrics, detected events, tables, and downloads always use every row.
 - **No persistence or accounts.** The app is a stateless single-user tool; exports live in
   the browser session and in `output/`.
-- **The container path is documented, not demonstrated.** Docker is unavailable in this
-  environment. The public Streamlit app is live at `/overview`, but its root URL needs the
-  Cloud entrypoint switched from `main.py` to `app.py`.
+- **The container path is verified in CI, not locally.** GitHub Actions builds the image,
+  runs it offline, and polls the health endpoint. Docker remains unavailable in this
+  development environment. The public Streamlit app is live at `/overview`, but its root URL
+  needs the Cloud entrypoint switched from `main.py` to `app.py`.
 
 ## Roadmap
 
-1. Switch the Streamlit Cloud main file to `app.py`, verify the CI container build and
-   health check, then refresh the public screenshots from the deployed instance (no mockups).
+1. Switch the Streamlit Cloud main file to `app.py`, then refresh the public screenshots
+   from the deployed instance (no mockups).
 2. Superposed-epoch comparison of the October 2003 and May 2024 storms on a common
    day-offset axis.
 3. Cross-check detected events against the official NOAA G-scale event list, with explicit

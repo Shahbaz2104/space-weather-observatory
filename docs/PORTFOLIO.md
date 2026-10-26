@@ -140,15 +140,15 @@ end to end with `ffmpeg`.
 - The heatmap describes selected windows; the offline sample covers 2003 and 2024 only.
 - Charts above `SWO_DISPLAY_MAX_POINTS` subsample for rendering; very short structure between
   displayed points may be absent from the chart even though it remains in the data and exports.
-- The Docker image is defined but was **not** built in this environment. A public Streamlit
-  deployment exists at `/overview`; its root URL is blank until the Cloud main file is set to
-  `app.py`.
+- The Docker image was **not** built locally. GitHub Actions builds it, runs it offline, and
+  polls the health endpoint successfully. A public Streamlit deployment exists at `/overview`;
+  its root URL is blank until the Cloud main file is set to `app.py`.
 - The screenshots in `assets/screenshots/` come from the offline sample, not a live feed.
 
 ## 8. Five most useful next improvements
 
-1. Fix the Streamlit Cloud entrypoint (`app.py`), verify the container build in CI, and refresh
-   the live demo screenshots once the root URL responds.
+1. Fix the Streamlit Cloud entrypoint (`app.py`) and refresh the live demo screenshots once
+   the root URL responds.
 2. Add a superposed-epoch view aligned on storm onset to compare the 2003 and 2024 events.
 3. Overlay NASA DONKI event notices with a documented anonymous-key fallback.
 4. Add a block-bootstrap or HAC uncertainty estimate alongside the current effective-`n` interval.
@@ -180,8 +180,8 @@ end to end with `ffmpeg`.
 8. **Close on integrity** (~30 s). Open Methodology; mention no zero-fill, preliminary-data
    warnings, provenance JSON on exports, and the test suite that covers each convention.
 
-If asked "what would you do next": fix the Cloud entrypoint, verify the container, then add a
-superposed-epoch comparison of the two sampled storms.
+If asked "what would you do next": fix the Cloud entrypoint, then add a superposed-epoch
+comparison of the two sampled storms.
 
 ---
 
@@ -241,11 +241,12 @@ Captured on 24–26 October 2026 in this repository's virtual environment (Pytho
 | First page build | `AppTest` on `app.py` / `pages/overview.py`, offline | 1.5 s entry point; ~0.3 s per page script |
 | App serves | `streamlit run app.py --server.port 8501` | HTTP 200, live mode reached NOAA SWPC |
 | Public deployment | Streamlit Cloud browser smoke check | `/overview` loaded live mode (latest Kp 2.00); root URL blank because the app's main file is `main.py` |
+| CI suite and container | GitHub Actions run `40329635430` (commit `595a1f1`) | Python 3.11 and 3.12 quality jobs passed; `container` job built the image, ran it offline, and polled the health endpoint |
 | Animation export | `python main.py --offline --format mp4` | 391 frames at 6 fps, 65.2 s video, 1.0 MB, ffmpeg 6.1.1, ~3 min 39 s wall time (single run, not a benchmark) |
 | Screenshots | `agent-browser` captures of the running app | `assets/screenshots/*.png`, offline sample, 1600 × 1000 viewport |
 
-Not verified in this environment, and therefore not claimed anywhere: the Docker image build,
-the CI container job, NASA DONKI behaviour with an API key, and live-mode behaviour during a
-real geomagnetic storm. The public `/overview` route was smoke-checked in a browser; the
-Streamlit Cloud root URL is not usable until its main file is changed from `main.py` to
-`app.py`.
+Not verified in this environment, and therefore not claimed anywhere: a local Docker build,
+NASA DONKI behaviour with an API key, and live-mode behaviour during a real geomagnetic
+storm. The CI container build and health check are verified in GitHub Actions. The public
+`/overview` route was smoke-checked in a browser; the Streamlit Cloud root URL is not usable
+until its main file is changed from `main.py` to `app.py`.

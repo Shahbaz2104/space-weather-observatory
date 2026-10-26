@@ -10,7 +10,7 @@ image, and a hosted Streamlit runtime. Each one ends in the same place — a ser
 | --- | --- |
 | Local virtual environment | Yes (`streamlit run app.py`, HTTP 200) |
 | `pip install -r requirements.txt` in a clean venv, then all eight page scripts | Yes (clean-venv probe, `AppTest`, offline mode, no exceptions) |
-| `docker build` / `docker run` / `docker compose up` | **No** — Docker is not installed in the environment this project was built in |
+| `docker build` / `docker run` / `docker compose up` | **Locally no** (Docker is not installed here); **yes in CI** (`container` job builds, runs offline, and polls `/_stcore/health`) |
 | Public hosting URL | **Partially** — the Streamlit Cloud app loads at `/overview`; the root URL is blank because the app's main file is currently `main.py` |
 
 The public app is live at
@@ -19,8 +19,9 @@ Its Streamlit Cloud settings currently point at `main.py`, so the bare root URL 
 empty `main` page and falls back to the default multipage navigation. Set **Main file path**
 to `app.py` and reboot before sharing the root URL. Until then, use the `/overview` link.
 
-The Docker build is still documented, not demonstrated. Do not claim a verified container
-image until the CI `container` job or a local build has actually passed.
+The GitHub Actions `container` job builds the Docker image, runs the container offline,
+and confirms the health endpoint before stopping it. This verifies the packaging path;
+local Docker remains unavailable in this development environment.
 
 ## 1. Local
 
