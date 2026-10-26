@@ -7,6 +7,7 @@ import streamlit as st
 
 from spaceweather import ui
 from spaceweather.analysis.statistics import summary_metrics
+from spaceweather.config import get_settings
 from spaceweather.processing.events import detect_events, events_to_frame
 from spaceweather.visualization.timeseries import (
     event_window_figure,
@@ -16,6 +17,7 @@ from spaceweather.visualization.timeseries import (
 
 mode, threshold = ui.sidebar_controls()
 start, end = ui.date_range_controls(mode)
+max_points = int(get_settings().display_max_points)
 
 ui.render_page_header(
     "Event forensics",
@@ -81,6 +83,7 @@ if not events:
             threshold=threshold,
             title="Planetary Kp · selection context",
             height=430,
+            max_points=max_points,
         ),
         key="storm_empty_timeline",
     )
@@ -187,6 +190,7 @@ show_wind = st.checkbox(
         "use NASA OMNI2 hourly observations. Loading is skipped if unavailable."
     ),
 )
+display_note: str | None = None
 if show_wind:
     try:
         with st.spinner("Loading solar-wind observations…"):
@@ -197,15 +201,14 @@ if show_wind:
         wind_bundle = None
         st.warning(f"Solar wind unavailable for this window: {exc}")
     if wind_bundle is not None and not wind_bundle.frame.empty:
-        ui.show_plot(
-            solar_wind_figure(
-                wind_bundle.frame,
-                kp=focus,
-                threshold=threshold,
-                height=720,
-            ),
-            key="storm_solar_wind",
+        wind_figure = solar_wind_figure(
+            wind_bundle.frame,
+            kp=focus,
+            threshold=threshold,
+            height=720,
+            max_points=max_points,
         )
+        display_note = ui.show_plot(wind_figure, key="storm_solar_wind")
         st.caption(
             f"{wind_bundle.message} Solar wind and Kp are shown on a shared UTC axis; "
             "they are not time-shifted to imply causation."
@@ -295,6 +298,7 @@ provenance = ui.provenance_for(
         "selected_event_start_utc": event.start_utc.isoformat(),
         "selected_event_end_utc": event.end_utc.isoformat(),
         "selected_event_peak_kp": event.peak_kp,
+        **({"display_sampling": display_note} if display_note else {}),
     },
 )
 left, right = st.columns(2)

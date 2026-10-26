@@ -7,6 +7,7 @@ import streamlit as st
 
 from spaceweather import ui
 from spaceweather.analysis.statistics import auto_summary, summary_metrics
+from spaceweather.config import get_settings
 from spaceweather.processing.cleaning import missing_summary
 from spaceweather.processing.events import detect_events, events_to_frame
 from spaceweather.visualization.distributions import kp_histogram_figure
@@ -14,6 +15,7 @@ from spaceweather.visualization.timeseries import kp_timeline_figure
 
 mode, threshold = ui.sidebar_controls()
 start, end = ui.date_range_controls(mode)
+max_points = int(get_settings().display_max_points)
 
 ui.render_page_header(
     "Geomagnetic conditions",
@@ -109,15 +111,14 @@ ui.metric_cards(
 )
 
 st.markdown("")
-ui.show_plot(
-    kp_timeline_figure(
-        bundle.frame,
-        threshold=threshold,
-        title="Planetary Kp · observed three-hour index",
-        height=480,
-    ),
-    key="overview_timeline",
+timeline = kp_timeline_figure(
+    bundle.frame,
+    threshold=threshold,
+    title="Planetary Kp · observed three-hour index",
+    height=480,
+    max_points=max_points,
 )
+display_note = ui.show_plot(timeline, key="overview_timeline")
 st.caption(
     "Kp timestamps mark the start of a three-hour interval. Shaded regions are "
     "contiguous threshold runs; missing slots break the line rather than being zero-filled."
@@ -203,6 +204,7 @@ provenance = ui.provenance_for(
         "Kp observations filtered to the selected UTC window.",
         "Storm runs detected from contiguous threshold exceedances.",
     ],
+    extra_notes={"display_sampling": display_note} if display_note else None,
 )
 download_left, download_middle, download_right = st.columns(3)
 with download_left:

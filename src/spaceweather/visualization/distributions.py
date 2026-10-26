@@ -6,6 +6,10 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from spaceweather.processing.cleaning import valid_kp
+from spaceweather.processing.resampling import (
+    display_sampling_metadata,
+    downsample_for_display,
+)
 from spaceweather.visualization import theme
 
 
@@ -74,6 +78,7 @@ def scatter_figure(
     x_label: str,
     y_label: str,
     title: str,
+    max_points: int | None = None,
 ) -> go.Figure:
     """Generic scatter with hover timestamps and missing pairs excluded."""
     if frame.empty or x not in frame or y not in frame:
@@ -90,6 +95,8 @@ def scatter_figure(
         figure.update_layout(title=title, height=440)
         return figure
     pairs = frame.dropna(subset=[x, y]).copy()
+    if max_points is not None:
+        pairs = downsample_for_display(pairs, max_points=max_points, value_columns=[x, y])
     custom = (
         pd.to_datetime(pairs["time_utc"], utc=True).dt.strftime("%Y-%m-%d %H:%M UTC")
         if "time_utc" in pairs
@@ -122,6 +129,9 @@ def scatter_figure(
         xaxis={"title": x_label},
         yaxis={"title": y_label},
     )
+    sampling = display_sampling_metadata(pairs)
+    if sampling:
+        figure.update_layout(meta=sampling)
     return figure
 
 

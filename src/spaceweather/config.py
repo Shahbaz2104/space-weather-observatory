@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     historical_ttl_seconds: int = Field(default=86_400, ge=0)
     offline_mode: bool = False
 
+    display_max_points: int = Field(default=5_000, ge=100, le=100_000)
     max_animation_frames: int = Field(default=600, ge=10, le=10_000)
     default_animation_fps: int = Field(default=10, ge=1, le=60)
     default_animation_width: float = Field(default=12.0, gt=0.0)

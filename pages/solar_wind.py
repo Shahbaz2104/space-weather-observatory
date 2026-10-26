@@ -6,12 +6,14 @@ import pandas as pd
 import streamlit as st
 
 from spaceweather import ui
+from spaceweather.config import get_settings
 from spaceweather.processing.cleaning import valid_kp
 from spaceweather.processing.resampling import infer_cadence_minutes
 from spaceweather.visualization.timeseries import solar_wind_figure
 
 mode, threshold = ui.sidebar_controls()
 start, end = ui.date_range_controls(mode)
+max_points = int(get_settings().display_max_points)
 
 ui.render_page_header(
     "Upstream conditions",
@@ -108,15 +110,14 @@ except Exception as exc:
     kp_frame = None
     kp_caption = f"Kp overlay unavailable: {exc}"
 
-ui.show_plot(
-    solar_wind_figure(
-        wind,
-        kp=kp_frame,
-        threshold=threshold,
-        height=760 if kp_frame is not None and not kp_frame.empty else 620,
-    ),
-    key="solar_wind_linked",
+wind_figure = solar_wind_figure(
+    wind,
+    kp=kp_frame,
+    threshold=threshold,
+    height=760 if kp_frame is not None and not kp_frame.empty else 620,
+    max_points=max_points,
 )
+display_note = ui.show_plot(wind_figure, key="solar_wind_linked")
 st.caption(
     f"{bundle.message} "
     + (
@@ -172,6 +173,7 @@ provenance = ui.provenance_for(
         "Solar-wind fields coerced to numeric; invalid values preserved as missing.",
         "Kp overlay (when available) loaded for the same UTC window.",
     ],
+    extra_notes={"display_sampling": display_note} if display_note else None,
 )
 left, right = st.columns(2)
 with left:

@@ -14,6 +14,8 @@ from spaceweather.processing.cleaning import (
 from spaceweather.processing.resampling import (
     aggregate_solar_wind,
     align_solar_wind_with_kp,
+    display_sampling_metadata,
+    downsample_for_display,
     infer_cadence_minutes,
 )
 
@@ -101,3 +103,47 @@ def test_empty_wind_does_not_become_zero() -> None:
     aggregated = aggregate_solar_wind(empty)
     assert aggregated.empty
     assert infer_cadence_minutes(empty) is None
+
+
+def test_downsample_for_display_is_a_noop_below_the_cap() -> None:
+    frame = pd.DataFrame(
+        {
+            "time_utc": pd.date_range("2024-05-01T00:00:00Z", periods=20, freq="3h"),
+            "kp": 3.0,
+        }
+    )
+    frame.attrs["units"] = {"kp": "unitless (0-9)"}
+    sampled = downsample_for_display(frame, max_points=20, value_columns=["kp"])
+    assert len(sampled) == len(frame)
+    assert "downsample_note" not in sampled.attrs
+    assert display_sampling_metadata(sampled) == {}
+
+
+def test_downsample_for_display_keeps_endpoints_and_gap_boundaries() -> None:
+    frame = pd.DataFrame(
+        {
+            "time_utc": pd.date_range("2024-05-01T00:00:00Z", periods=10_000, freq="3h"),
+            "kp": 3.0,
+        }
+    )
+    frame.loc[5_000:5_002, "kp"] = None
+    frame.attrs["units"] = {"kp": "unitless (0-9)"}
+
+    sampled = downsample_for_display(frame, max_points=1_000, value_columns=["kp"])
+    kept_times = set(pd.to_datetime(sampled["time_utc"], utc=True))
+
+    assert len(sampled) <= 1_004
+    assert sampled.attrs["downsample_rows_total"] == 10_000
+    assert sampled.attrs["downsample_rows_displayed"] == len(sampled)
+    assert sampled.attrs["downsample_stride"] > 1
+    assert "downsample_note" in sampled.attrs
+    assert sampled.attrs["units"] == {"kp": "unitless (0-9)"}
+    assert frame.iloc[0]["time_utc"] in kept_times
+    assert frame.iloc[-1]["time_utc"] in kept_times
+    for index in (4_999, 5_000, 5_002, 5_003):
+        assert frame.iloc[index]["time_utc"] in kept_times
+
+    metadata = display_sampling_metadata(sampled)
+    assert metadata["downsample_rows_total"] == 10_000
+    assert metadata["downsample_rows_displayed"] == len(sampled)
+    assert "downsample_note" in metadata

@@ -50,6 +50,19 @@ def test_script_renders_without_exceptions(script: str) -> None:
 
 
 @pytest.mark.integration
+def test_overview_discloses_display_downsampling(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("SWO_DISPLAY_MAX_POINTS", "100")
+    get_settings.cache_clear()
+
+    app = _render_offline(ROOT / "pages" / "overview.py")
+
+    assert not list(app.exception)
+    assert any("downsample" in caption.value.lower() for caption in app.caption)
+
+
+@pytest.mark.integration
 def test_animation_page_uses_configured_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("SWO_DEFAULT_ANIMATION_FPS", "18")
     monkeypatch.setenv("SWO_DEFAULT_ANIMATION_WIDTH", "14.5")

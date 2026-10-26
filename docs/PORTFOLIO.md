@@ -60,6 +60,12 @@ samples are aggregated onto the same left-labelled bins, and each bin carries `n
 processing layer. The heatmap renders an absent cell differently from a zero cell; the event
 detector reports interior gaps rather than closing them.
 
+**Render-time sampling that cannot hide a gap.** Charts above a configurable point cap use a
+uniform stride for rendering only, but always retain the first and last rows and the
+boundaries of missing-data runs. Metrics, event detection, tables, and exports keep every row,
+and the reduction is captioned under the chart. A long series can therefore be responsive
+without quietly turning a gap into a continuous line or changing the statistics.
+
 **Failures are visible.** HTTP calls have timeouts, bounded retries with backoff, and a disk
 cache with an explicit TTL. When a source is unreachable the interface says so; a stale cache
 is labelled "source unavailable", never presented as a fresh observation. The bundled sample
@@ -132,13 +138,17 @@ end to end with `ffmpeg`.
 - NASA DONKI is optional, disabled by default, and not exercised without an API key.
 - The effective sample size is a lag-1 diagnostic, not a full time-series model.
 - The heatmap describes selected windows; the offline sample covers 2003 and 2024 only.
-- The Docker image is defined but was **not** built in this environment, and there is no public
-  deployment. No URL is claimed.
+- Charts above `SWO_DISPLAY_MAX_POINTS` subsample for rendering; very short structure between
+  displayed points may be absent from the chart even though it remains in the data and exports.
+- The Docker image is defined but was **not** built in this environment. A public Streamlit
+  deployment exists at `/overview`; its root URL is blank until the Cloud main file is set to
+  `app.py`.
 - The screenshots in `assets/screenshots/` come from the offline sample, not a live feed.
 
 ## 8. Five most useful next improvements
 
-1. Build and verify the container, then publish a demo and link it only once it responds.
+1. Fix the Streamlit Cloud entrypoint (`app.py`), verify the container build in CI, and refresh
+   the live demo screenshots once the root URL responds.
 2. Add a superposed-epoch view aligned on storm onset to compare the 2003 and 2024 events.
 3. Overlay NASA DONKI event notices with a documented anonymous-key fallback.
 4. Add a block-bootstrap or HAC uncertainty estimate alongside the current effective-`n` interval.
@@ -170,7 +180,7 @@ end to end with `ffmpeg`.
 8. **Close on integrity** (~30 s). Open Methodology; mention no zero-fill, preliminary-data
    warnings, provenance JSON on exports, and the test suite that covers each convention.
 
-If asked "what would you do next": build and verify the container and a hosted demo, then add a
+If asked "what would you do next": fix the Cloud entrypoint, verify the container, then add a
 superposed-epoch comparison of the two sampled storms.
 
 ---
@@ -178,6 +188,8 @@ superposed-epoch comparison of the two sampled storms.
 ## LinkedIn project description (draft)
 
 > **Space Weather Observatory — an evidence-first dashboard for geomagnetic storms**
+>
+> Live demo: <https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview>
 >
 > I built a Streamlit application that turns NOAA, GFZ, and NASA space-weather data into a
 > scientific observatory interface: a live overview of planetary Kp, threshold-driven storm
@@ -206,7 +218,7 @@ superposed-epoch comparison of the two sampled storms.
   explicit stale-source states instead of silent fallbacks.
 - Implemented the analytical layer — completeness metrics, threshold-based event detection,
   three-hour resampling with coverage fractions, and autocorrelation-adjusted correlation
-  intervals — and covered each convention with unit and integration tests (51 tests, Ruff and
+  intervals — and covered each convention with unit and integration tests (58 tests, Ruff and
   mypy clean), including an offline `AppTest` smoke test of all seven pages.
 - Delivered reproducibility tooling: CSV, Parquet, figure, GIF/MP4 exports with JSON provenance
   recording sources, retrieval times, units, transformations, and warnings; verified MP4
@@ -216,11 +228,11 @@ superposed-epoch comparison of the two sampled storms.
 
 ## Evidence log
 
-Captured on 24–25 October 2026 in this repository's virtual environment (Python 3.12, Linux).
+Captured on 24–26 October 2026 in this repository's virtual environment (Python 3.12, Linux).
 
 | Check | Command | Result |
 | --- | --- | --- |
-| Test suite | `pytest -q` | 51 passed in 13.85 s |
+| Test suite | `pytest -q` | 58 passed in 15.79 s |
 | Lint | `ruff check .` | All checks passed |
 | Types | `mypy src` | Success: no issues found in 36 source files |
 | Page smoke test | `pytest tests/integration/test_pages_smoke.py` (`AppTest` over `app.py` + 7 pages, offline mode) | 8 scripts, no exceptions |
@@ -228,9 +240,12 @@ Captured on 24–25 October 2026 in this repository's virtual environment (Pytho
 | Server cold start | `streamlit run app.py`, timed to `/_stcore/health` = 200, offline, two runs | 1.5 s and 1.8 s |
 | First page build | `AppTest` on `app.py` / `pages/overview.py`, offline | 1.5 s entry point; ~0.3 s per page script |
 | App serves | `streamlit run app.py --server.port 8501` | HTTP 200, live mode reached NOAA SWPC |
+| Public deployment | Streamlit Cloud browser smoke check | `/overview` loaded live mode (latest Kp 2.00); root URL blank because the app's main file is `main.py` |
 | Animation export | `python main.py --offline --format mp4` | 391 frames at 6 fps, 65.2 s video, 1.0 MB, ffmpeg 6.1.1, ~3 min 39 s wall time (single run, not a benchmark) |
 | Screenshots | `agent-browser` captures of the running app | `assets/screenshots/*.png`, offline sample, 1600 × 1000 viewport |
 
 Not verified in this environment, and therefore not claimed anywhere: the Docker image build,
-any public deployment URL, NASA DONKI behaviour with an API key, and live-mode behaviour during
-a real geomagnetic storm.
+the CI container job, NASA DONKI behaviour with an API key, and live-mode behaviour during a
+real geomagnetic storm. The public `/overview` route was smoke-checked in a browser; the
+Streamlit Cloud root URL is not usable until its main file is changed from `main.py` to
+`app.py`.

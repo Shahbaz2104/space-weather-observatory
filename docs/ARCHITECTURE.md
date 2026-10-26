@@ -29,7 +29,7 @@ Provider-specific adapters and parsers. They return canonical frames with a fixe
 ### `processing/`
 
 - `cleaning.py` — normalization, UTC filtering, completeness, source merging.
-- `resampling.py` — three-hour solar-wind aggregation and Kp alignment.
+- `resampling.py` — three-hour solar-wind aggregation, Kp alignment, and gap-preserving display sampling.
 - `events.py` — transparent storm-run detection and G-scale classification.
 
 ### `analysis/`

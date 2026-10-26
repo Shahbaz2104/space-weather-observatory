@@ -7,11 +7,13 @@ import streamlit as st
 
 from spaceweather import ui
 from spaceweather.analysis.correlations import correlate, lagged_cross_correlation
+from spaceweather.config import get_settings
 from spaceweather.exceptions import InsufficientDataError
 from spaceweather.visualization.distributions import lag_figure, scatter_figure
 
 mode, threshold = ui.sidebar_controls()
 start, end = ui.date_range_controls(mode)
+max_points = int(get_settings().display_max_points)
 
 ui.render_page_header(
     "Statistical exploration",
@@ -135,19 +137,19 @@ ui.metric_cards(
 )
 
 st.markdown("")
+display_note: str | None = None
 left, right = st.columns([1.1, 1], gap="large")
 with left:
-    ui.show_plot(
-        scatter_figure(
-            aligned,
-            x=variable,
-            y="kp",
-            x_label=f"{variable_label} ({variable_unit})",
-            y_label="Kp index",
-            title=f"{variable_label} versus Kp",
-        ),
-        key="correlation_scatter",
+    scatter = scatter_figure(
+        aligned,
+        x=variable,
+        y="kp",
+        x_label=f"{variable_label} ({variable_unit})",
+        y_label="Kp index",
+        title=f"{variable_label} versus Kp",
+        max_points=max_points,
     )
+    display_note = ui.show_plot(scatter, key="correlation_scatter")
     st.caption(
         f"{len(pairs):,} complete pairs. Point colour follows Kp; hover for the UTC "
         "timestamp. No regression line is drawn because neither variable is treated "
@@ -226,6 +228,7 @@ provenance = ui.provenance_for(
         "effective_sample_size": result["n_effective"],
         "pearson_r": result["pearson_r"],
         "spearman_rho": result["spearman_rho"],
+        **({"display_sampling": display_note} if display_note else {}),
     },
 )
 left, right = st.columns(2)

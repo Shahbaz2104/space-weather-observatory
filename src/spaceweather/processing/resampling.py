@@ -107,16 +107,80 @@ def align_solar_wind_with_kp(
     return merged.sort_values("time_utc").reset_index(drop=True)
 
 
-def downsample_for_display(frame: pd.DataFrame, *, max_points: int = 5000) -> pd.DataFrame:
-    """Uniformly subsample a long series, recording the disclosure in ``attrs``."""
-    if len(frame) <= max_points or max_points < 2:
+def downsample_for_display(
+    frame: pd.DataFrame,
+    *,
+    max_points: int = 5000,
+    value_columns: Iterable[str] | None = None,
+) -> pd.DataFrame:
+    """Uniformly subsample a long series for rendering, recording the disclosure.
+
+    Endpoints and the boundaries of missing-data runs are retained so a gap is never
+    visually bridged. Metrics, event detection, tables, and exports must use the
+    original frame; only chart traces should receive this result.
+    """
+    total = len(frame)
+    if total <= max_points or max_points < 3:
         return frame.copy()
-    stride = math.ceil(len(frame) / max_points)
-    result = frame.iloc[::stride].copy()
+
+    stride = math.ceil(total / max_points)
+    keep = set(range(0, total, stride))
+    boundaries = {0, total - 1}
+
+    if value_columns is not None:
+        columns = [column for column in value_columns if column in frame.columns]
+        missing = (
+            frame.loc[:, columns].isna().all(axis=1).to_numpy()
+            if columns
+            else frame.isna().any(axis=1).to_numpy()
+        )
+    else:
+        missing = frame.isna().any(axis=1).to_numpy()
+
+    run_start: int | None = None
+    for position, is_missing in enumerate(missing):
+        if is_missing and run_start is None:
+            run_start = position
+        elif not is_missing and run_start is not None:
+            for index in (run_start - 1, run_start, position - 1, position):
+                if 0 <= index < total:
+                    boundaries.add(index)
+            run_start = None
+    if run_start is not None:
+        for index in (run_start - 1, run_start, total - 1):
+            if 0 <= index < total:
+                boundaries.add(index)
+
+    keep.update(boundaries)
+    if len(keep) > max_points:
+        available = max(1, max_points - len(boundaries))
+        stride = max(stride, math.ceil(total / available))
+        keep = set(range(0, total, stride)) | boundaries
+
+    result = frame.iloc[sorted(keep)].copy()
     result.attrs.update(frame.attrs)
+    result.attrs["downsample_stride"] = stride
+    result.attrs["downsample_rows_total"] = total
+    result.attrs["downsample_rows_displayed"] = len(result)
     result.attrs["downsample_note"] = (
-        f"Display downsampled by taking every {stride}th observation "
-        f"({len(result)} of {len(frame)} rows). Downloads retain all rows."
+        f"Display downsampled by taking every {stride}th observation plus endpoint "
+        f"and missing-gap boundaries ({len(result):,} of {total:,} rows). "
+        "Metrics, detected events, and downloads retain every row."
     )
     logger.info(result.attrs["downsample_note"])
     return result
+
+
+def display_sampling_metadata(frame: pd.DataFrame) -> dict[str, object]:
+    """Return the render-time sampling disclosure stored on a frame, if any."""
+    note = frame.attrs.get("downsample_note")
+    if not note:
+        return {}
+    return {
+        "downsample_note": str(note),
+        "downsample_stride": int(frame.attrs.get("downsample_stride", 1)),
+        "downsample_rows_total": int(frame.attrs.get("downsample_rows_total", len(frame))),
+        "downsample_rows_displayed": int(
+            frame.attrs.get("downsample_rows_displayed", len(frame))
+        ),
+    }

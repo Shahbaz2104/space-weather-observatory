@@ -7,9 +7,10 @@
 
 > This is an educational and exploratory tool. It is **not** an operational forecast service, a civil-protection system, or a substitute for NOAA SWPC alerts.
 >
-> **Status:** runs locally and in offline sample mode, with container configuration and CI
-> defined; no public demo is deployed yet, so no live link is claimed. Deployment paths are
-> in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+> **Live demo:** <https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview>.
+> The Streamlit Cloud app is currently pointed at `main.py`, so the bare root URL is blank;
+> set the main file to `app.py` to serve the styled dashboard at the root. Deployment notes
+> are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ![Space Weather Observatory — overview page showing the May 2024 Kp record](assets/screenshots/overview.png)
 
@@ -180,6 +181,7 @@ Copy `.env.example` to `.env`; every setting uses the `SWO_` prefix.
 | `SWO_HTTP_TIMEOUT_SECONDS` | `20` | Per-request timeout |
 | `SWO_HTTP_RETRIES` | `3` | Retry count |
 | `SWO_CACHE_TTL_SECONDS` | `900` | Default HTTP cache lifetime |
+| `SWO_DISPLAY_MAX_POINTS` | `5000` | Max points plotted per chart; metrics, events, and exports use all rows |
 | `SWO_MAX_ANIMATION_FRAMES` | `600` | Upper bound on rendered frames (app and CLI) |
 | `SWO_DEFAULT_ANIMATION_FPS` | `10` | Initial playback rate in Animation Studio |
 | `SWO_DEFAULT_ANIMATION_WIDTH` | `12.0` | Initial figure width in inches |
@@ -198,7 +200,7 @@ ruff check .
 mypy src
 ```
 
-The suite covers parsers, missing-data handling, event conventions, correlation statistics, lag direction, provenance serialization, sample loading, service-level alignment, and a smoke test of the entry point and all seven pages through Streamlit's `AppTest` harness. Integration tests use the committed genuine-data sample and do not require network access.
+The suite covers parsers, missing-data handling, event conventions, correlation statistics, lag direction, provenance serialization, gap-preserving display sampling, sample loading, service-level alignment, and a smoke test of the entry point and all seven pages through Streamlit's `AppTest` harness. Integration tests use the committed genuine-data sample and do not require network access.
 
 ## Reproducibility and exports
 
@@ -212,7 +214,7 @@ end of [docs/PORTFOLIO.md](docs/PORTFOLIO.md):
 
 | Measurement | How | Result |
 | --- | --- | --- |
-| Test suite | `pytest -q` | 51 tests in ~14 s |
+| Test suite | `pytest -q` | 58 tests in ~16 s |
 | App entry point and all seven pages | `AppTest.from_file(...)` in offline mode | 8 scripts, no exceptions, ~11 s total |
 | Static quickstart | `python main.py` | PNG + GIF written to `output/` |
 | Animation export | `python main.py --offline --format mp4` | 391 frames at 6 fps, 65.2 s video, 1.0 MB, ~3 min 39 s wall time (single run) |
@@ -229,9 +231,11 @@ ffprobe -v error -show_entries format=duration,size -of default=nw=1 output/geom
 
 Interactive page latency is dominated by source retrieval on a cold cache (one HTTP round
 per product, then cached for 15 minutes) and by Plotly re-rendering of the selected window.
-Chart views currently plot every row in the window; the only sampling in the app is the
-animation frame stride, which is disclosed in the export provenance and in the Animation
-Studio output.
+Charts above `SWO_DISPLAY_MAX_POINTS` (default 5,000) are uniformly subsampled for
+rendering, with endpoints and missing-gap boundaries retained so a gap cannot be bridged.
+Metrics, event detection, tables, and exports use every row, and the reduction is captioned
+under the chart. The animation has its own frame stride, disclosed in the export provenance
+and in the Animation Studio output.
 
 ## Limitations
 
@@ -248,19 +252,20 @@ Studio output.
 - **No 3D globe.** A reliable 3D renderer was judged incompatible with the target hosting
   story, so the scientific views are 2D and the field-line/particle ideas stay unbuilt
   rather than faked.
-- **No display downsampling yet.** `processing/resampling.downsample_for_display` exists and
-  records its own disclosure, but the pages are not wired to it: selecting the full GFZ
-  record renders every row, which is slow rather than incorrect. Narrow the date range for
-  a responsive view.
+- **Charts reduce very long series.** Above `SWO_DISPLAY_MAX_POINTS` (default 5,000),
+  rendering uses a uniform stride plus endpoint and missing-gap boundaries. The trade-off
+  is explicit: very short-lived structure between sampled points may be absent from the
+  chart, while metrics, detected events, tables, and downloads always use every row.
 - **No persistence or accounts.** The app is a stateless single-user tool; exports live in
   the browser session and in `output/`.
-- **Container and hosted paths are documented, not demonstrated.** Docker is unavailable in
-  this environment and no public URL has been deployed.
+- **The container path is documented, not demonstrated.** Docker is unavailable in this
+  environment. The public Streamlit app is live at `/overview`, but its root URL needs the
+  Cloud entrypoint switched from `main.py` to `app.py`.
 
 ## Roadmap
 
-1. Build and smoke-test the container, then publish a demo URL with screenshots taken from
-   the deployed instance (no mockups).
+1. Switch the Streamlit Cloud main file to `app.py`, verify the CI container build and
+   health check, then refresh the public screenshots from the deployed instance (no mockups).
 2. Superposed-epoch comparison of the October 2003 and May 2024 storms on a common
    day-offset axis.
 3. Cross-check detected events against the official NOAA G-scale event list, with explicit
@@ -275,7 +280,8 @@ Studio output.
 decisions, analytical methods, validation approach, limitations, and next steps — plus a
 six-minute interview demo script and draft LinkedIn/CV text. Its figures are traceable to an
 evidence log at the end of the file, and anything not measured in this environment is marked
-as unmeasured rather than filled in.
+as unmeasured rather than filled in. LinkedIn-ready copy and generated images are in
+[docs/LINKEDIN.md](docs/LINKEDIN.md) and `assets/linkedin/`.
 
 ## Attribution
 

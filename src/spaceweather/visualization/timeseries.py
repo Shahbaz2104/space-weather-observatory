@@ -8,6 +8,10 @@ from plotly.subplots import make_subplots
 
 from spaceweather.processing.cleaning import valid_kp
 from spaceweather.processing.events import detect_events
+from spaceweather.processing.resampling import (
+    display_sampling_metadata,
+    downsample_for_display,
+)
 from spaceweather.visualization import theme
 
 EMPTY_MESSAGE = "No valid observations are available for the selected window."
@@ -48,6 +52,7 @@ def kp_timeline_figure(
     title: str = "Planetary Kp activity",
     height: int = 470,
     show_range_slider: bool = True,
+    max_points: int | None = None,
 ) -> go.Figure:
     """Build the main Kp timeline with storm shading and threshold annotation."""
     valid = valid_kp(frame)
@@ -64,6 +69,8 @@ def kp_timeline_figure(
         .rename_axis("time_utc")
         .reset_index()
     )
+    if max_points is not None:
+        series = downsample_for_display(series, max_points=max_points, value_columns=["kp"])
     customdata = list(
         zip(
             series["source"].fillna("unknown"),
@@ -181,6 +188,9 @@ def kp_timeline_figure(
         hovermode="x",
         legend={"orientation": "h", "y": 1.04},
     )
+    sampling = display_sampling_metadata(series)
+    if sampling:
+        figure.update_layout(meta=sampling)
     return figure
 
 
@@ -190,6 +200,7 @@ def solar_wind_figure(
     kp: pd.DataFrame | None = None,
     threshold: float = 5.0,
     height: int = 700,
+    max_points: int | None = None,
 ) -> go.Figure:
     """Linked solar-wind, IMF Bz, and Kp panels."""
     wind = solar_wind.copy()
@@ -197,6 +208,12 @@ def solar_wind_figure(
         return _empty_figure("Solar wind and geomagnetic activity")
     wind["time_utc"] = pd.to_datetime(wind["time_utc"], utc=True, errors="coerce")
     wind = wind.loc[wind["time_utc"].notna()].sort_values("time_utc")
+    if max_points is not None:
+        wind = downsample_for_display(
+            wind,
+            max_points=max_points,
+            value_columns=("speed_kms", "density_cm3", "bz_gsm_nt", "bt_nt"),
+        )
 
     has_kp = kp is not None and not kp.empty
     rows = 3 if has_kp else 2
@@ -283,6 +300,9 @@ def solar_wind_figure(
     figure.update_xaxes(
         rangeslider={"visible": True, "thickness": 0.05}, row=rows, col=1
     )
+    sampling = display_sampling_metadata(wind)
+    if sampling:
+        figure.update_layout(meta=sampling)
     return figure
 
 

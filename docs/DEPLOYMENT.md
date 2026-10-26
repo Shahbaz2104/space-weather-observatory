@@ -11,10 +11,16 @@ image, and a hosted Streamlit runtime. Each one ends in the same place — a ser
 | Local virtual environment | Yes (`streamlit run app.py`, HTTP 200) |
 | `pip install -r requirements.txt` in a clean venv, then all eight page scripts | Yes (clean-venv probe, `AppTest`, offline mode, no exceptions) |
 | `docker build` / `docker run` / `docker compose up` | **No** — Docker is not installed in the environment this project was built in |
-| Public hosting URL | **No** — no account or credentials were used, so none is claimed |
+| Public hosting URL | **Partially** — the Streamlit Cloud app loads at `/overview`; the root URL is blank because the app's main file is currently `main.py` |
 
-Anything in the last two rows is documented, not demonstrated. Do not publish a live-demo
-link until you have actually run one of them.
+The public app is live at
+<https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview>.
+Its Streamlit Cloud settings currently point at `main.py`, so the bare root URL serves an
+empty `main` page and falls back to the default multipage navigation. Set **Main file path**
+to `app.py` and reboot before sharing the root URL. Until then, use the `/overview` link.
+
+The Docker build is still documented, not demonstrated. Do not claim a verified container
+image until the CI `container` job or a local build has actually passed.
 
 ## 1. Local
 
@@ -53,6 +59,8 @@ SWO_KP_STORM_THRESHOLD=6  streamlit run app.py # stricter event definition
 
 Animation Studio reads its initial playback rate, figure size, and resolution from
 `SWO_DEFAULT_ANIMATION_*`, and enforces `SWO_MAX_ANIMATION_FRAMES` on every export.
+Charts cap rendered points at `SWO_DISPLAY_MAX_POINTS` (default 5,000) while metrics,
+events, tables, and downloads keep every row.
 
 ### Writable paths
 

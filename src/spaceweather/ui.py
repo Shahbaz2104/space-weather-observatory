@@ -368,8 +368,8 @@ def display_frame(frame: pd.DataFrame) -> pd.DataFrame:
     return output
 
 
-def show_plot(figure: go.Figure, *, key: str | None = None) -> None:
-    """Render a Plotly figure with sensible interaction settings."""
+def show_plot(figure: go.Figure, *, key: str | None = None) -> str | None:
+    """Render a Plotly figure and disclose any render-time sampling."""
     st.plotly_chart(
         figure,
         width="stretch",
@@ -380,6 +380,13 @@ def show_plot(figure: go.Figure, *, key: str | None = None) -> None:
         },
         key=key,
     )
+    meta = figure.layout.meta
+    if isinstance(meta, dict):
+        note = meta.get("downsample_note")
+        if note:
+            st.caption(str(note))
+            return str(note)
+    return None
 
 
 def empty_state(message: str) -> None:

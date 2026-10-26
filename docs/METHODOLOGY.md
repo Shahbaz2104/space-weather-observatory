@@ -19,6 +19,15 @@ This project aims to be **scientifically legible**, not merely visually convinci
 
 This matters because “quiet” and “unknown” are different physical statements.
 
+## Display reduction
+
+Charts longer than `SWO_DISPLAY_MAX_POINTS` (default 5,000) are uniformly subsampled for
+rendering only. The first and last rows and the boundaries of missing-data runs are always
+retained, so downsampling cannot draw a line across a gap. Metrics, detected events, tables,
+and downloads use the original rows; the reduction is captioned under the chart. Very short
+structure between sampled points may therefore be absent from a chart even though it remains
+in the underlying data and exports.
+
 ## Storm detection
 
 A storm event is a contiguous run of samples with **Kp ≥ threshold**. The default threshold is 5.0 (G1).
