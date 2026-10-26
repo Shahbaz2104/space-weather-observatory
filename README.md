@@ -7,10 +7,8 @@
 
 > This is an educational and exploratory tool. It is **not** an operational forecast service, a civil-protection system, or a substitute for NOAA SWPC alerts.
 >
-> **Live demo:** <https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview>.
-> The Streamlit Cloud app is currently pointed at `main.py`, so the bare root URL is blank;
-> set the main file to `app.py` to serve the styled dashboard at the root. Deployment notes
-> are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+> **Live demo:** <https://space-weather-observatory-4xedxr5f2n5vpym7t5ix7p.streamlit.app/>.
+> Deployment notes are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ![Space Weather Observatory — overview page showing the May 2024 Kp record](assets/screenshots/overview.png)
 
@@ -261,13 +259,12 @@ and in the Animation Studio output.
   the browser session and in `output/`.
 - **The container path is verified in CI, not locally.** GitHub Actions builds the image,
   runs it offline, and polls the health endpoint. Docker remains unavailable in this
-  development environment. The public Streamlit app is live at `/overview`, but its root URL
-  needs the Cloud entrypoint switched from `main.py` to `app.py`.
+  development environment. The public Streamlit app serves the styled dashboard from its
+  root URL.
 
 ## Roadmap
 
-1. Switch the Streamlit Cloud main file to `app.py`, then refresh the public screenshots
-   from the deployed instance (no mockups).
+1. Refresh the public screenshots from the deployed instance (no mockups).
 2. Superposed-epoch comparison of the October 2003 and May 2024 storms on a common
    day-offset axis.
 3. Cross-check detected events against the official NOAA G-scale event list, with explicit

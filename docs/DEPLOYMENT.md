@@ -11,13 +11,14 @@ image, and a hosted Streamlit runtime. Each one ends in the same place — a ser
 | Local virtual environment | Yes (`streamlit run app.py`, HTTP 200) |
 | `pip install -r requirements.txt` in a clean venv, then all eight page scripts | Yes (clean-venv probe, `AppTest`, offline mode, no exceptions) |
 | `docker build` / `docker run` / `docker compose up` | **Locally no** (Docker is not installed here); **yes in CI** (`container` job builds, runs offline, and polls `/_stcore/health`) |
-| Public hosting URL | **Partially** — the Streamlit Cloud app loads at `/overview`; the root URL is blank because the app's main file is currently `main.py` |
+| Public hosting URL | **Yes** — the Streamlit Cloud app serves `app.py` at its root URL and loads without a login |
 
 The public app is live at
-<https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview>.
-Its Streamlit Cloud settings currently point at `main.py`, so the bare root URL serves an
-empty `main` page and falls back to the default multipage navigation. Set **Main file path**
-to `app.py` and reboot before sharing the root URL. Until then, use the `/overview` link.
+<https://space-weather-observatory-4xedxr5f2n5vpym7t5ix7p.streamlit.app/>.
+Its Streamlit Cloud settings point at `app.py`, so the root URL opens the styled Overview
+page. The `/overview` path is not a route on this deployment; the other pages are served at
+`/storm_explorer`, `/heatmap`, `/solar_wind`, `/correlation`, `/animation`, and
+`/methodology`.
 
 The GitHub Actions `container` job builds the Docker image, runs the container offline,
 and confirms the health endpoint before stopping it. This verifies the packaging path;

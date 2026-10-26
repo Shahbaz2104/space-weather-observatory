@@ -543,7 +543,7 @@ def closing_slide() -> Image.Image:
     )
     draw.text(
         (112, 622),
-        "https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview",
+        "https://space-weather-observatory-4xedxr5f2n5vpym7t5ix7p.streamlit.app",
         font=font(17, "mono"),
         fill=TEXT,
     )

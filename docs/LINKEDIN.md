@@ -2,7 +2,7 @@
 
 A ready-to-publish set of copy, images, and checks for the project. The images use genuine
 screenshots captured from the running app in offline sample mode, not mockups. The deployed
-app is live at `/overview`; the root URL is pending a Streamlit Community Cloud entrypoint fix.
+app is live at its root URL and opens on the Overview page.
 
 ## Assets
 
@@ -29,22 +29,21 @@ It writes the PNGs and the six-page PDF to `assets/linkedin/`.
 
 ## Before publishing
 
-The current Streamlit Community Cloud app is configured with `main.py` as its **main file**.
-That makes the root URL render an empty page and shows the default multipage navigation.
-`/overview` works and is the safest demo link today.
+The live app is configured with `app.py` as its **main file** and opens the styled dashboard
+at the root URL. The `/overview` path is not a route on this deployment; use the root URL.
+The dashboard pages are reachable at `/storm_explorer`, `/heatmap`, `/solar_wind`,
+`/correlation`, `/animation`, and `/methodology`.
 
 Do this before posting the live link:
 
-1. In Streamlit Community Cloud, open the app settings and set **Main file path** to `app.py`.
-2. Reboot the app. Verify the root URL and `/overview` both load the styled dashboard.
-3. Push the repository changes and wait for the `quality` and `container` jobs to pass.
-4. Re-check the live app in a private/incognito window. If it still looks unstyled or the
-   screenshots do not match it, omit the live link and re-render slide 6 without the `LIVE DEMO`
-   block until the deployment is fixed.
+1. Open the root URL in a private/incognito window and confirm it loads without a login.
+2. Push the repository changes and wait for the `quality` and `container` jobs to pass.
+3. Re-check the live app against the screenshots. If it looks unstyled or the screenshots do
+   not match it, omit the live link and re-render slide 6 without the `LIVE DEMO` block.
 
 The live demo URL is:
 
-`https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview`
+`https://space-weather-observatory-4xedxr5f2n5vpym7t5ix7p.streamlit.app`
 
 ## Main post
 
@@ -112,7 +111,7 @@ On the bundled May 2024 sample: peak Kp 9.00 (G5). Solar-wind speed vs Kp: r = 0
 Post this immediately after publishing so the post body stays link-free.
 
 ```text
-Live demo: https://space-weather-observatory-nsnhccmkm2xumzqopwzi7q.streamlit.app/overview
+Live demo: https://space-weather-observatory-4xedxr5f2n5vpym7t5ix7p.streamlit.app
 Repository: https://github.com/Shahbaz2104/space-weather-observatory
 Methodology: https://github.com/Shahbaz2104/space-weather-observatory/blob/main/docs/METHODOLOGY.md
 
@@ -149,11 +148,11 @@ Use these when LinkedIn offers an alt-text field.
 
 ## Posting checklist
 
-- [ ] Set the Streamlit Cloud **Main file path** to `app.py` and reboot.
-- [ ] Confirm both the root URL and `/overview` load without a login.
-- [ ] Run `pytest -q`, `ruff check .`, and `mypy src`; the current suite is 58 tests.
+- [x] Set the Streamlit Cloud **Main file path** to `app.py` and reboot.
+- [x] Confirm the root URL loads without a login.
+- [x] Run `pytest -q`, `ruff check .`, and `mypy src`; the current suite is 58 tests.
 - [x] Push and confirm the GitHub Actions `quality` and `container` jobs pass. (Passed on commit `595a1f1`.)
-- [ ] Run `python3 scripts/build_linkedin_assets.py` after any copy or screenshot change.
+- [x] Run `python3 scripts/build_linkedin_assets.py` after any copy or screenshot change.
 - [ ] Upload `space-weather-linkedin-carousel.pdf` as a document post. Suggested title: “When the Sun disrupts Earth — Space Weather Observatory.”
 - [ ] Add the first comment with the live demo and repository.
 - [ ] Add alt text to every image, or use the document description.
